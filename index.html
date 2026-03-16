@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taiwan Ate Me Alive: A Filipino's Honest Food Diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #1b130f;
+    --cream: #f7ebdb;
+    --warm-white: #fcf5ea;
+    --red: #b8472f;
+    --gold: #d7a160;
+    --jade: #667553;
+    --muted: #7f6d5f;
+    --border: #ddc8b2;
+    --section-bg: #22150f;
+    --card-bg: #312019;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background:
+      radial-gradient(circle at top, rgba(215,161,96,0.08), transparent 24%),
+      linear-gradient(180deg, #fff9f1 0%, var(--warm-white) 42%, #f5ebde 100%);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(24,15,11,0.93);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(215,161,96,0.28);
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); text-decoration: none;
+  }
+  .nav-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* HERO */
+  .hero {
+    height: 100vh; min-height: 600px;
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end;
+  }
+  .hero-img {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #20120d 0%, #6c3225 50%, #1d120d 100%);
+  }
+  .hero-img img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    opacity: 0.7;
+  }
+  .hero-img,
+  .food-stop-image,
+  .img-mosaic .img-item {
+    isolation: isolate;
+    background:
+      radial-gradient(circle at top right, rgba(215,161,96,0.2), transparent 34%),
+      linear-gradient(135deg, #20120d 0%, #6a3022 52%, #1d120d 100%);
+  }
+  .hero-img::before,
+  .hero-img::after,
+  .food-stop-image::before,
+  .food-stop-image::after,
+  .img-mosaic .img-item::before,
+  .img-mosaic .img-item::after {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .hero-img::before,
+  .food-stop-image::before,
+  .img-mosaic .img-item::before {
+    content: 'Photo unavailable';
+    bottom: 56px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(247,235,219,0.74);
+  }
+  .hero-img::after,
+  .food-stop-image::after,
+  .img-mosaic .img-item::after {
+    content: attr(data-fallback-label);
+    bottom: 18px;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 38px);
+    line-height: 1.08;
+    color: var(--cream);
+  }
+  .hero-img.has-fallback::before,
+  .hero-img.has-fallback::after,
+  .food-stop-image.has-fallback::before,
+  .food-stop-image.has-fallback::after,
+  .img-mosaic .img-item.has-fallback::before,
+  .img-mosaic .img-item.has-fallback::after {
+    opacity: 1;
+  }
+  .hero-img.has-fallback img,
+  .food-stop-image.has-fallback img,
+  .img-mosaic .img-item.has-fallback img {
+    opacity: 0;
+  }
+  .hero-img[data-theme="market"],
+  .img-mosaic .img-item[data-theme="market"] {
+    background:
+      radial-gradient(circle at top right, rgba(215,161,96,0.26), transparent 32%),
+      linear-gradient(135deg, #25140f 0%, #8e3a2e 55%, #24130e 100%);
+  }
+  .food-stop-image[data-theme="rice"],
+  .img-mosaic .img-item[data-theme="rice"] {
+    background:
+      radial-gradient(circle at top right, rgba(184,71,47,0.18), transparent 34%),
+      linear-gradient(135deg, #241811 0%, #7a583b 55%, #21150f 100%);
+  }
+  .food-stop-image[data-theme="dumpling"],
+  .img-mosaic .img-item[data-theme="dumpling"] {
+    background:
+      radial-gradient(circle at top right, rgba(215,161,96,0.22), transparent 34%),
+      linear-gradient(135deg, #241711 0%, #8a6a4b 55%, #21150f 100%);
+  }
+  .food-stop-image[data-theme="fried"],
+  .img-mosaic .img-item[data-theme="fried"] {
+    background:
+      radial-gradient(circle at top right, rgba(215,161,96,0.3), transparent 34%),
+      linear-gradient(135deg, #29180d 0%, #a85b25 56%, #26170f 100%);
+  }
+  .food-stop-image[data-theme="tea"],
+  .img-mosaic .img-item[data-theme="tea"] {
+    background:
+      radial-gradient(circle at top right, rgba(102,117,83,0.26), transparent 36%),
+      linear-gradient(135deg, #18130f 0%, #606245 52%, #1f1711 100%);
+  }
+  .food-stop-image[data-theme="dessert"],
+  .img-mosaic .img-item[data-theme="dessert"] {
+    background:
+      radial-gradient(circle at top right, rgba(215,161,96,0.22), transparent 34%),
+      linear-gradient(135deg, #2d1b18 0%, #7b6045 52%, #231710 100%);
+  }
+  .food-stop-image[data-theme="lantern"],
+  .img-mosaic .img-item[data-theme="lantern"] {
+    background:
+      radial-gradient(circle at top right, rgba(184,71,47,0.28), transparent 32%),
+      linear-gradient(135deg, #231011 0%, #a03629 55%, #2c160f 100%);
+  }
+  .food-stop-image[data-theme="noodle"],
+  .img-mosaic .img-item[data-theme="noodle"] {
+    background:
+      radial-gradient(circle at top right, rgba(215,161,96,0.24), transparent 34%),
+      linear-gradient(135deg, #24150f 0%, #86502e 52%, #21160f 100%);
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(18,10,8,0.96) 0%, rgba(18,10,8,0.48) 50%, rgba(18,10,8,0.18) 100%);
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 0 64px 72px;
+    max-width: 900px;
+    animation: fadeUp 1.2s ease both;
+  }
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block; width: 40px; height: 1px; background: var(--gold);
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 900; line-height: 1.0;
+    color: var(--cream); margin-bottom: 24px;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-subtitle {
+    font-family: 'Lora', serif;
+    font-size: 18px; color: rgba(247,235,219,0.78);
+    max-width: 520px; line-height: 1.7; margin-bottom: 32px;
+  }
+  .hero-meta {
+    display: flex; gap: 32px; align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-meta span { color: var(--cream); }
+
+  /* INTRO */
+  .intro-section {
+    max-width: 720px; margin: 96px auto;
+    padding: 0 32px;
+  }
+  p { margin-bottom: 1.4em; }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    border-left: 3px solid var(--gold);
+    margin: 48px 0 48px 40px;
+    padding: 8px 0 8px 28px;
+  }
+  .pull-quote blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-style: italic;
+    color: var(--ink); line-height: 1.4;
+  }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    display: flex; align-items: center; gap: 20px;
+    max-width: 720px; margin: 64px auto;
+    padding: 0 32px;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .section-divider-inner {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--muted); white-space: nowrap;
+  }
+
+  /* FOOD STOP CARDS */
+  .food-stop {
+    margin: 0 auto 100px;
+    max-width: 1100px;
+    padding: 0 32px;
+  }
+  .food-stop-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; align-items: stretch;
+    background: var(--section-bg);
+    overflow: hidden;
+  }
+  .food-stop-inner.reverse { direction: rtl; }
+  .food-stop-inner.reverse > * { direction: ltr; }
+
+  .food-stop-image {
+    position: relative; overflow: hidden;
+    min-height: 440px;
+  }
+  .food-stop-image img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.8s ease;
+  }
+  .food-stop:hover .food-stop-image img { transform: scale(1.04); }
+  .food-stop-image-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(184,71,47,0.18), rgba(40,20,15,0.08) 58%, transparent);
+  }
+  .food-stop-number {
+    position: absolute; top: 24px; left: 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 80px; font-weight: 900;
+    color: rgba(255,255,255,0.07);
+    line-height: 1; pointer-events: none;
+  }
+
+  .food-stop-text {
+    padding: 52px 48px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .stop-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .stop-label::after {
+    content: ''; flex: 1; max-width: 40px; height: 1px; background: var(--gold);
+  }
+  .stop-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px; font-weight: 700;
+    color: var(--cream); line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .stop-tagline {
+    font-family: 'Lora', serif; font-style: italic;
+    font-size: 15px; color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .stop-body {
+    font-size: 15.5px; color: rgba(247,235,219,0.84);
+    line-height: 1.78; flex: 1;
+  }
+  .stop-body p { margin-bottom: 1.2em; }
+
+  .verdict-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 9.5px; letter-spacing: 1.9px; text-transform: uppercase;
+    padding: 9px 16px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid rgba(247,235,219,0.12);
+    background: linear-gradient(180deg, rgba(247,235,219,0.05), rgba(247,235,219,0.02));
+    color: rgba(247,235,219,0.9);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .badge-good {
+    background: linear-gradient(180deg, rgba(215,161,96,0.15), rgba(215,161,96,0.07));
+    border-color: rgba(215,161,96,0.28);
+  }
+  .badge-bad {
+    background: linear-gradient(180deg, rgba(247,235,219,0.045), rgba(247,235,219,0.018));
+    border-color: rgba(184,71,47,0.24);
+    color: rgba(247,235,219,0.82);
+  }
+  .badge-good::before { content: '✦'; font-size: 10px; color: var(--gold); }
+  .badge-bad::before { content: '✕'; font-size: 10px; color: #cf8268; }
+
+  /* INTERLUDE */
+  .interlude {
+    background: var(--section-bg);
+    padding: 96px 32px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .interlude::before {
+    content: '"';
+    position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 280px; color: rgba(215,161,96,0.08);
+    line-height: 1; pointer-events: none;
+  }
+  .interlude blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 42px);
+    font-style: italic; font-weight: 400;
+    color: var(--cream); max-width: 740px;
+    margin: 0 auto 24px; line-height: 1.35;
+    position: relative; z-index: 1;
+  }
+  .interlude cite {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); font-style: normal;
+  }
+
+  /* HONEST SECTION */
+  .honest-section {
+    background: linear-gradient(180deg, #1d120d 0%, #251610 100%);
+    padding: 82px 32px;
+  }
+  .honest-inner { max-width: 1120px; margin: 0 auto; }
+  .honest-header {
+    text-align: center; margin: 0 auto 40px; max-width: 760px;
+  }
+  .honest-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 56px);
+    color: var(--cream); font-weight: 900;
+  }
+  .honest-header h2 em { color: var(--red); font-style: italic; }
+  .honest-header p {
+    font-family: 'Lora', serif; font-style: italic;
+    color: var(--muted); font-size: 17px; margin-top: 12px;
+  }
+  .honest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .honest-card {
+    background: linear-gradient(180deg, rgba(247,235,219,0.045), rgba(247,235,219,0.018));
+    border: 1px solid rgba(215,161,96,0.14);
+    padding: 24px 22px 22px;
+  }
+  .honest-card-meta {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 2.4px; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .honest-card-meta::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(215,161,96,0.16);
+  }
+  .honest-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px; color: var(--cream);
+    margin-bottom: 10px; font-weight: 700;
+    line-height: 1.15;
+  }
+  .honest-card p {
+    font-size: 14.5px; color: rgba(247,235,219,0.78);
+    line-height: 1.62; margin-bottom: 0;
+  }
+
+  /* SCORECARD */
+  .scorecard-section {
+    max-width: 800px; margin: 96px auto;
+    padding: 0 32px;
+  }
+  .scorecard-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px; font-weight: 900; margin-bottom: 8px;
+  }
+  .scorecard-section .sub {
+    font-family: 'Lora', serif; font-style: italic;
+    color: var(--muted); margin-bottom: 48px;
+  }
+  .scorecard-row {
+    display: grid; grid-template-columns: 200px 1fr 48px;
+    align-items: center; gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .scorecard-row:last-child { border-bottom: none; }
+  .scorecard-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; font-weight: 700;
+  }
+  .score-bar-wrap {
+    height: 5px; background: var(--border); border-radius: 3px; overflow: hidden;
+  }
+  .score-bar {
+    height: 100%; background: var(--red); border-radius: 3px;
+  }
+  .score-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px; font-weight: 700;
+    color: var(--red); text-align: right;
+  }
+
+  /* VERDICT */
+  .verdict-section {
+    background: linear-gradient(180deg, #170f0b 0%, #24140f 100%);
+    padding: 96px 32px;
+    text-align: center;
+  }
+  .verdict-inner { max-width: 680px; margin: 0 auto; }
+  .verdict-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 64px);
+    color: var(--cream); font-weight: 900;
+    margin-bottom: 32px; line-height: 1.1;
+  }
+  .verdict-section h2 em { color: var(--gold); font-style: italic; }
+  .verdict-section p {
+    color: rgba(247,235,219,0.74);
+    font-size: 17px; line-height: 1.8; margin-bottom: 1.4em;
+  }
+  .return-badge {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: var(--red); color: var(--cream);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 16px 32px; margin-top: 24px;
+  }
+
+  /* IMAGE LAYOUTS */
+  .img-mosaic {
+    max-width: 1100px; margin: 64px auto;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px;
+    height: 480px;
+  }
+  .img-mosaic .img-item {
+    overflow: hidden; position: relative;
+  }
+  .img-mosaic .img-item.tall {
+    grid-row: 1 / span 2;
+  }
+  .img-mosaic .img-item img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.7s ease;
+  }
+  .img-mosaic .img-item:hover img { transform: scale(1.05); }
+
+  /* FOOTER */
+  footer {
+    background: #120c09;
+    padding: 48px 32px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: #6f594a;
+  }
+  footer span { color: var(--gold); }
+
+  /* RESPONSIVE */
+  @media (max-width: 980px) {
+    .honest-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-tag { display: none; }
+    .hero-content { padding: 0 24px 48px; }
+    .food-stop-inner, .food-stop-inner.reverse { grid-template-columns: 1fr; direction: ltr; }
+    .food-stop-image { min-height: 260px; }
+    .food-stop-text { padding: 32px 24px; }
+    .honest-grid { grid-template-columns: 1fr; }
+    .scorecard-row { grid-template-columns: 1fr 48px; }
+    .scorecard-row .score-bar-wrap { display: none; }
+    .pull-quote { margin-left: 0; }
+    .img-mosaic { height: auto; grid-template-columns: 1fr; grid-template-rows: auto; }
+    .img-mosaic .img-item.tall { grid-row: auto; }
+    .img-mosaic .img-item { height: 220px; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-img">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Night_market_in_Taiwan_2007-01-24.jpg/1280px-Night_market_in_Taiwan_2007-01-24.jpg" alt="Taiwan night market" data-fallback-theme="market" fetchpriority="high" decoding="async" referrerpolicy="no-referrer">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Travel Essay · Taiwan</div>
+    <h1 class="hero-title">Taiwan <em>Ate Me</em><br>Alive</h1>
+    <p class="hero-subtitle">A Filipino's honest food diary: the comforting, the cinematic, and the parts nobody puts on their travel reels.</p>
+    <div class="hero-meta">
+      <div>By <span>Cedric</span></div>
+      <div>From <span>Metro Manila, PH</span></div>
+      <div>6 stops · <span>One honest trip</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="intro-section">
+  <p class="drop-cap">There is something about Taiwan that disarms you before you even realize it. It is not one grand gesture. It is quieter. The orderliness of its streets, the cool air inside convenience stores that feel like a civic amenity, the way people walk without the low-level urgency that Metro Manila wires into your nervous system by default.</p>
+
+  <p>As a Filipino from Quezon City, stepping into Taiwan felt like entering a parallel version of familiar. Asian urban rhythm, yes. But cleaned up. Considered. The kind of city life that makes you realize the baseline does not have to be chaos.</p>
+
+  <p>I did what I always do when I travel: I ate first and thought about it later. And honestly, if I had to explain this entire trip through food alone, I probably could.</p>
+
+  <div class="pull-quote">
+    <blockquote>"This was not a trip about checking off landmarks. It was about what happens when you slow down enough to let ordinary places become something more."</blockquote>
+  </div>
+
+  <p>Six places stood out: Xi Fu Yang, Jiguang Fried Chicken, Chun Sui Tang, Grandma Lai's Sweet Taro Balls, A-Mei Tea House, and Fuhong Beef Noodles. Each gave me a different texture of Taiwan. None of them were perfect. All of them were worth it.</p>
+
+  <p>Let me tell you about them honestly.</p>
+</section>
+
+<!-- MOSAIC 1 -->
+  <div class="img-mosaic">
+  <div class="img-item tall">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Ningxia_Night_Market%2C_2023_%2810%29.jpg/1280px-Ningxia_Night_Market%2C_2023_%2810%29.jpg" alt="Taipei Ningxia Night Market" data-fallback-theme="market" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+  </div>
+  <div class="img-item">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Taiwanese_Beef_Noodle_Soup.jpg/960px-Taiwanese_Beef_Noodle_Soup.jpg" alt="Taiwan beef noodle soup" data-fallback-theme="noodle" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+  </div>
+  <div class="img-item">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Grass_Jelly_with_Taro_Balls%2C_Sweet_Potato_and_Pearl.jpg/1280px-Grass_Jelly_with_Taro_Balls%2C_Sweet_Potato_and_Pearl.jpg" alt="Taro balls dessert Taiwan" data-fallback-theme="dessert" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+  </div>
+</div>
+
+<div class="section-divider"><span class="section-divider-inner">The Six Stops</span></div>
+
+<!-- STOP 1 -->
+<article class="food-stop">
+  <div class="food-stop-inner">
+    <div class="food-stop-image">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Xiaolongbao-breakfast.jpg?width=1280" alt="Xi Fu Yang dumplings" data-fallback-theme="dumpling" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+      <div class="food-stop-image-overlay"></div>
+      <div class="food-stop-number">01</div>
+    </div>
+    <div class="food-stop-text">
+      <div class="stop-label">Stop 01</div>
+      <h2 class="stop-name">Xi Fu Yang</h2>
+      <p class="stop-tagline">Dumplings first, boba right after</p>
+      <div class="stop-body">
+        <p>Xi Fu Yang, at least in my memory of the order, was the dumplings-and-boba stop. It was not the most obvious pairing on paper, but it worked in practice: something hot and savory first, then something cold and sweet to reset the whole meal.</p>
+        <p>The dumplings did the real work. They were comforting, filling, and direct in a way I always appreciate when traveling. The boba softened the edges after that and turned the stop into less of a formal sit-down meal and more of a small recovery break in the day.</p>
+        <p><strong style="color:var(--gold)">The honest part:</strong> This was one of the places where ordering felt the least clear. Between the language gap and me half-guessing my way through the menu, I am still describing it as "boba and dumplings?" for a reason. It worked out, but it was not a smooth ordering experience.</p>
+      </div>
+      <div class="verdict-row">
+        <span class="badge badge-good">Dumplings</span>
+        <span class="badge badge-good">Boba reset</span>
+        <span class="badge badge-bad">Language barrier</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STOP 2 -->
+<article class="food-stop">
+  <div class="food-stop-inner reverse">
+    <div class="food-stop-image">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Fried%20chicken%20steak%20at%20Shilin%20Market%2020070729.jpg?width=1280" alt="Jiguang fried chicken steak" data-fallback-theme="fried" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+      <div class="food-stop-image-overlay"></div>
+      <div class="food-stop-number">02</div>
+    </div>
+    <div class="food-stop-text">
+      <div class="stop-label">Stop 02</div>
+      <h2 class="stop-name">Jiguang Fried Chicken</h2>
+      <p class="stop-tagline">Chicken steak first, poppers right after</p>
+      <div class="stop-body">
+        <p>Jiguang Fried Chicken was less subtle. I went for the chicken steak and the poppers, which is exactly the kind of order that makes complete sense when you are hungry, walking, and making choices based on smell alone.</p>
+        <p>The chicken steak had the bigger, more satisfying bite, while the poppers were easier to snack on between steps. It was greasy in the best possible way: salty, hot, immediate, and impossible to regret while it was happening.</p>
+        <p><strong style="color:var(--gold)">The honest part:</strong> The queue can be genuinely punishing, especially at peak hours. I watched tourists give up and leave. It is also easy to over-order because everything looks manageable. It is not. I ate too much, stood in the heat, and spent twenty minutes regretting my life choices. Worth it, but pace yourself.</p>
+      </div>
+      <div class="verdict-row">
+        <span class="badge badge-good">Chicken steak</span>
+        <span class="badge badge-good">Poppers</span>
+        <span class="badge badge-bad">Long queues</span>
+        <span class="badge badge-bad">Easy to overeat</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- INTERLUDE -->
+<div class="interlude">
+  <blockquote>"Taiwan's food does not perform for you. It simply exists, deeply settled into daily life, and somehow that makes it taste better."</blockquote>
+  <cite>A thought somewhere between the second tea and the beef noodles</cite>
+</div>
+
+<!-- STOP 3 -->
+<article class="food-stop" style="margin-top: 80px;">
+  <div class="food-stop-inner">
+    <div class="food-stop-image">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Chung%20Shui%20Tang%20Bubble%20Milk%20Tea%20in%20Taichung.jpg?width=960" alt="Original boba at Chun Shui Tang" data-fallback-theme="tea" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+      <div class="food-stop-image-overlay"></div>
+      <div class="food-stop-number">03</div>
+    </div>
+    <div class="food-stop-text">
+      <div class="stop-label">Stop 03 · Taichung</div>
+      <h2 class="stop-name">Chun Sui Tang</h2>
+      <p class="stop-tagline">The original boba, no detours</p>
+      <div class="stop-body">
+        <p>At Chun Sui Tang, I kept it simple and got the original boba. That felt like the only correct move. If you are in the place attached to bubble tea's origin story, there is no need to get clever with the order.</p>
+        <p>What I liked was how balanced it tasted. The pearls had the texture I wanted, the sweetness stayed controlled, and the whole drink felt more like a reference point than a novelty. It made a lot of other milk teas make sense in reverse.</p>
+        <p><strong style="color:var(--gold)">The honest part:</strong> It is expensive relative to what you can find at any number of equally good bubble tea shops nearby, and the tourist traffic inside can make the atmosphere feel less serene than you'd hope. Go on a weekday, ideally mid-morning, if you can.</p>
+      </div>
+      <div class="verdict-row">
+        <span class="badge badge-good">Original boba</span>
+        <span class="badge badge-good">Balanced sweetness</span>
+        <span class="badge badge-bad">Tourist crowds</span>
+        <span class="badge badge-bad">Premium pricing</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STOP 4 -->
+<article class="food-stop">
+  <div class="food-stop-inner reverse">
+    <div class="food-stop-image">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Taro_Balls_at_Jiufen%2C_New_Taipei_City%2C_Sept_2011.jpg/960px-Taro_Balls_at_Jiufen%2C_New_Taipei_City%2C_Sept_2011.jpg" alt="Grandma Lai's taro balls in Jiufen" data-fallback-theme="dessert" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+      <div class="food-stop-image-overlay"></div>
+      <div class="food-stop-number">04</div>
+    </div>
+    <div class="food-stop-text">
+      <div class="stop-label">Stop 04 · Jiufen</div>
+      <h2 class="stop-name">Grandma Lai's<br>Sweet Taro Balls</h2>
+      <p class="stop-tagline">Comfort in a bowl, ego-free</p>
+      <div class="stop-body">
+        <p>I did not overthink this one. I went there for the sweet taro balls, and that is exactly what I wanted from it: something chewy, comforting, and simple enough to let the texture do most of the work.</p>
+        <p>As a Filipino, the texture vocabulary hit somewhere familiar. We understand the emotional power of soft and starchy: <em>bilo-bilo, ginataan,</em> all of it. So while this was distinctly Taiwanese, there was something in it that felt immediately relatable.</p>
+        <p><strong style="color:var(--gold)">The honest part:</strong> The queue, set against Jiufen's already-cramped alleys, can feel claustrophobic. The old street is beautiful, but it is extremely narrow and heavily trafficked. On a weekend, personal space becomes a luxury you cannot afford. The taro balls are worth the wait. The shuffling through tourist crowds to get there is less romantic in practice than it looks in photos.</p>
+      </div>
+      <div class="verdict-row">
+        <span class="badge badge-good">Sweet taro balls</span>
+        <span class="badge badge-good">Chewy comfort</span>
+        <span class="badge badge-bad">Jiufen weekend crowds</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- MOSAIC 2 -->
+<div class="img-mosaic" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto; height: 300px; margin: 48px auto 80px;">
+  <div class="img-item">
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Chung%20Shui%20Tang%20Bubble%20Milk%20Tea%20in%20Taichung.jpg?width=960" alt="Original boba at Chun Shui Tang" data-fallback-theme="tea" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+  </div>
+  <div class="img-item">
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Interior%20of%20A-Mei%20Tea%20House%2013%2020250703.jpg?width=1280" alt="Tea set inside A-Mei Tea House" data-fallback-theme="tea" data-backup-src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/A-Mei_Tea_House%2C_Jiufen%2C_2024.jpg/1280px-A-Mei_Tea_House%2C_Jiufen%2C_2024.jpg" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+  </div>
+  <div class="img-item">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Taiwanese_Beef_Noodle_Soup.jpg/960px-Taiwanese_Beef_Noodle_Soup.jpg" alt="Fuhong beef noodles with tender beef" data-fallback-theme="noodle" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+  </div>
+</div>
+
+<!-- STOP 5 -->
+<article class="food-stop">
+  <div class="food-stop-inner">
+    <div class="food-stop-image">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Interior%20of%20A-Mei%20Tea%20House%2013%2020250703.jpg?width=1280" alt="A-Mei Tea House tea set" data-fallback-theme="tea" data-backup-src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/A-Mei_Tea_House%2C_Jiufen%2C_2024.jpg/1280px-A-Mei_Tea_House%2C_Jiufen%2C_2024.jpg" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+      <div class="food-stop-image-overlay"></div>
+      <div class="food-stop-number">05</div>
+    </div>
+    <div class="food-stop-text">
+      <div class="stop-label">Stop 05 · Jiufen</div>
+      <h2 class="stop-name">A-Mei Tea House</h2>
+      <p class="stop-tagline">A tea set that forced me to slow down</p>
+      <div class="stop-body">
+        <p>At A-Mei Tea House, what I actually had was the tea set, and that changes the memory of the place a little. Yes, the setting is cinematic. But the thing I remember most is the ritual: the small cups, the repeated pours, and the feeling that the whole table had to slow down to match the tea.</p>
+        <p>That part landed harder than the view. Travel can get very checklist-heavy, and the tea set forced the opposite rhythm. You sit, pour, taste, and stay longer than you meant to.</p>
+        <p><strong style="color:var(--gold)">The honest part:</strong> You are absolutely paying for the setting, and the famous seats are still crowded. The tea set made the stop worthwhile for me, but the tourist machinery around it is very real.</p>
+      </div>
+      <div class="verdict-row">
+        <span class="badge badge-good">Tea set</span>
+        <span class="badge badge-good">Slow ritual</span>
+        <span class="badge badge-bad">Overpriced</span>
+        <span class="badge badge-bad">Crowded views</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STOP 6 -->
+<article class="food-stop">
+  <div class="food-stop-inner reverse">
+    <div class="food-stop-image">
+      <img src="https://img.corner.com.tw/_next/image?url=https%3A%2F%2Fimages.cornerapp.com%2Fstore%2F0B5EA356%2F1736214039194.jpeg&amp;w=3840&amp;q=75" alt="Fuhong beef noodles with tender beef" data-fallback-theme="noodle" data-backup-src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Taiwanese_Beef_Noodle_Soup.jpg/960px-Taiwanese_Beef_Noodle_Soup.jpg" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+      <div class="food-stop-image-overlay"></div>
+      <div class="food-stop-number">06</div>
+    </div>
+    <div class="food-stop-text">
+      <div class="stop-label">Stop 06 · Taipei</div>
+      <h2 class="stop-name">Fuhong Beef Noodles</h2>
+      <p class="stop-tagline">Mostly about the beef</p>
+      <div class="stop-body">
+        <p>Fuhong Beef Noodles was the heavy closer, and for me the star was the beef more than anything else. The pieces were soft, deeply cooked, and serious enough that the bowl felt built around them.</p>
+        <p>The broth and noodles obviously mattered, but the beef is what stayed in my head. It had the kind of texture that makes a place feel earned rather than just famous.</p>
+        <p><strong style="color:var(--gold)">The honest part:</strong> The portions are larger than they look, and combined with a full day of walking in the heat, I nearly needed a recovery nap afterward. Also, the location is a no-frills shophouse setup that will feel aggressively ordinary after A-Mei Tea House. That is not a flaw. But manage your expectations about the setting. The experience lives entirely in the bowl.</p>
+      </div>
+      <div class="verdict-row">
+        <span class="badge badge-good">Tender beef</span>
+        <span class="badge badge-good">Deep broth</span>
+        <span class="badge badge-bad">Not Instagrammable</span>
+        <span class="badge badge-bad">Heavy on a full stomach</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- HONEST SECTION -->
+<section class="honest-section">
+  <div class="honest-inner">
+    <div class="honest-header">
+      <h2>What Nobody <em>Posts</em> About Taiwan</h2>
+      <p>The friction is real. Here is what to actually prepare for.</p>
+    </div>
+    <div class="honest-grid">
+      <div class="honest-card">
+        <div class="honest-card-meta">01 · Language</div>
+        <h3>The Language Wall</h3>
+        <p>Outside tourist-heavy areas, Mandarin does most of the work and English menus are inconsistent. Keep a camera translator ready and expect to point more than you speak.</p>
+      </div>
+      <div class="honest-card">
+        <div class="honest-card-meta">02 · Crowds</div>
+        <h3>The Crowd Reality</h3>
+        <p>Jiufen is the most photogenic stop on the trip and also the most crowded. Go on a weekday morning if you want the place to feel even slightly breathable.</p>
+      </div>
+      <div class="honest-card">
+        <div class="honest-card-meta">03 · Heat</div>
+        <h3>The Heat, If Summer</h3>
+        <p>Taiwan summer heat is heavier than it first looks, especially once humidity and hills combine. Water, shade, and slower pacing matter more than you think.</p>
+      </div>
+      <div class="honest-card">
+        <div class="honest-card-meta">04 · Data</div>
+        <h3>Navigation Without Data</h3>
+        <p>The transit system is excellent, but only if your map is live. A local SIM or pocket WiFi saves you from wasting time between stations, buses, and alley turns.</p>
+      </div>
+      <div class="honest-card">
+        <div class="honest-card-meta">05 · Pricing</div>
+        <h3>Hype vs. Reality Pricing</h3>
+        <p>Famous spots like Chun Sui Tang and A-Mei charge for name and setting, not just quality. Budget for that premium or treat them as one-off splurges.</p>
+      </div>
+      <div class="honest-card">
+        <div class="honest-card-meta">06 · Transit</div>
+        <h3>Getting Between Cities</h3>
+        <p>Taipei, Taichung, and Tainan look close on paper, but the travel time adds up. Book HSR segments ahead and avoid cross-city decisions when you are already tired.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORECARD -->
+<section class="scorecard-section">
+  <h2>The Honest Scorecard</h2>
+  <p class="sub">Rated on personal impact, not just taste</p>
+  <div class="scorecard-row">
+    <div class="scorecard-name">A-Mei Tea House</div>
+    <div class="score-bar-wrap"><div class="score-bar" style="width:94%"></div></div>
+    <div class="score-num">9.4</div>
+  </div>
+  <div class="scorecard-row">
+    <div class="scorecard-name">Fuhong Beef Noodles</div>
+    <div class="score-bar-wrap"><div class="score-bar" style="width:91%"></div></div>
+    <div class="score-num">9.1</div>
+  </div>
+  <div class="scorecard-row">
+    <div class="scorecard-name">Xi Fu Yang</div>
+    <div class="score-bar-wrap"><div class="score-bar" style="width:88%"></div></div>
+    <div class="score-num">8.8</div>
+  </div>
+  <div class="scorecard-row">
+    <div class="scorecard-name">Grandma Lai's</div>
+    <div class="score-bar-wrap"><div class="score-bar" style="width:85%"></div></div>
+    <div class="score-num">8.5</div>
+  </div>
+  <div class="scorecard-row">
+    <div class="scorecard-name">Jiguang Fried Chicken</div>
+    <div class="score-bar-wrap"><div class="score-bar" style="width:82%"></div></div>
+    <div class="score-num">8.2</div>
+  </div>
+  <div class="scorecard-row">
+    <div class="scorecard-name">Chun Sui Tang</div>
+    <div class="score-bar-wrap"><div class="score-bar" style="width:78%"></div></div>
+    <div class="score-num">7.8</div>
+  </div>
+</section>
+
+<!-- VERDICT -->
+<section class="verdict-section">
+  <div class="verdict-inner">
+    <h2>Would I Go<br><em>Back?</em></h2>
+    <p>Yes. Without hesitation.</p>
+    <p>Not because Taiwan was flawless. It was not. The crowds at Jiufen test your patience. The language gap is real. Some prices are inflated by fame. You will eat past your limit at least once and regret nothing.</p>
+    <p>But Taiwan made me feel good while I was there. Not in a polished, curated, tourist-package way. In a genuine, everyday-life-is-worth-living kind of way. The food, the pace, the streets: they all worked together toward something that is harder to name than it is to feel.</p>
+    <p>As a 25-year-old from Metro Manila, that balance (accessible but special, vibrant but not exhausting) is exactly what I needed somewhere. Taiwan just happened to be where I found it.</p>
+    <div><span class="return-badge">✈ Returning Before the Memory Fades</span></div>
+  </div>
+</section>
+
+<script>
+  const fallbackFrames = document.querySelectorAll('.hero-img, .food-stop-image, .img-mosaic .img-item');
+
+  fallbackFrames.forEach((frame) => {
+    const img = frame.querySelector('img');
+    if (!img) return;
+
+    frame.dataset.theme = img.dataset.fallbackTheme || 'default';
+    frame.dataset.fallbackLabel = img.alt || 'Taiwan';
+    const backupSrc = img.dataset.backupSrc;
+
+    const applyFallback = () => {
+      if (frame.classList.contains('has-fallback')) return;
+      frame.classList.add('has-fallback');
+      img.setAttribute('aria-hidden', 'true');
+    };
+
+    const handleError = () => {
+      if (backupSrc && img.dataset.backupTried !== 'true') {
+        img.dataset.backupTried = 'true';
+        img.src = backupSrc;
+        return;
+      }
+      applyFallback();
+    };
+
+    img.addEventListener('error', handleError);
+
+    if (img.complete && img.naturalWidth === 0) {
+      handleError();
+    }
+  });
+</script>
+
+</body>
+</html>
